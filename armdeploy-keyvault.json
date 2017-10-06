@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "acs-kube-keyvault",
+            "apiVersion": "2015-06-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "[subscription().tenantId]",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "e5303de9-ac55-49b4-8d80-2e5545d15522",
+                        "permissions": {
+                            "keys": [ "All" ],
+                            "secrets": [ "All" ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
