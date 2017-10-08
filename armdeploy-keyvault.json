@@ -12,6 +12,7 @@
                     "family": "A",
                     "name": "Standard"
                 },
+                "enabledForTemplateDeployment": true,
                 "tenantId": "[subscription().tenantId]",
                 "accessPolicies": [
                     {

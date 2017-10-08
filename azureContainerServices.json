@@ -24,7 +24,7 @@
         "description": "Sets the Domain name prefix for the cluster.  The concatenation of the domain name and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address."
       }
     },
-    "adminUsername": {
+    "linuxAdminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
       "metadata": {
@@ -35,9 +35,7 @@
       "type": "string",
       "defaultValue": "Kubernetes",
       "allowedValues": [
-        "Kubernetes",
-        "DCOS",
-        "Swarm"
+        "Kubernetes"
       ],
       "metadata": {
         "description": "The type of orchestrator used to manage the applications on the cluster."
@@ -50,7 +48,7 @@
       }
     },
     "windowsAdminPassword": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Password for Windows agents."
       }
@@ -71,7 +69,7 @@
     }
   },
   "variables": {
-    "adminUsername":"[parameters('adminUsername')]",
+    "linuxAdminUsername":"[parameters('linuxAdminUsername')]",
     "agentsEndpointDNSNamePrefix":"[concat(parameters('dnsNamePrefix'),resourceGroup().location,'agents')]",
     "mastersEndpointDNSNamePrefix":"[concat(parameters('dnsNamePrefix'),resourceGroup().location,'mgmt')]",
     "sshRSAPublicKey":"[parameters('sshRSAPublicKey')]",
@@ -105,7 +103,7 @@
         },
         "agentPoolProfiles": [
           {
-            "name": "agentpools",
+            "name": "windowspool",
             "count": "[parameters('agentCount')]",
             "vmSize": "[parameters('agentVMSize')]",
             "dnsPrefix": "[variables('agentsEndpointDNSNamePrefix')]",
@@ -113,7 +111,7 @@
           }
         ],
         "linuxProfile": {
-          "adminUsername": "[variables('adminUsername')]",
+          "adminUsername": "[variables('linuxAdminUsername')]",
           "ssh": {
             "publicKeys": [
               {
@@ -123,7 +121,7 @@
           }
         },
         "windowsProfile": {
-          "adminUsername": "[parameters('adminUsername')]",
+          "adminUsername": "[parameters('linuxAdminUsername')]",
           "adminPassword": "[parameters('windowsAdminPassword')]" 
         },
         "servicePrincipalProfile": "[variables('servicePrincipalFields')[variables('useServicePrincipal')]]"
@@ -137,7 +135,7 @@
     },
     "sshMaster0": {
       "type": "string",
-      "value": "[concat('ssh ', variables('adminUsername'), '@', reference(concat('Microsoft.ContainerService/containerServices/', 'containerservice-', resourceGroup().name)).masterProfile.fqdn, ' -A -p 22')]"
+      "value": "[concat('ssh ', variables('linuxAdminUsername'), '@', reference(concat('Microsoft.ContainerService/containerServices/', 'containerservice-', resourceGroup().name)).masterProfile.fqdn, ' -A -p 22')]"
     },
     "agentFQDN": {
       "type": "string",
