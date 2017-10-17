@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: LoadBalancer
+  ports:
+  - name: grafana-front
+    port: 80
+    targetPort: 3000
+  selector:
+    app: grafana-app
+    tier: grafana-frontend
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: grafana-app
+spec:
+  selector:
+    matchLabels:
+      app: grafana-app
+      tier: grafana-frontend
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: grafana-app
+        tier: grafana-frontend
+    spec:
+      containers:
+      - name: grafana-frontend
+        image: davidobrien/nanoserver-grafana
+        env:
+        - name: GF_database_type
+          value: postgres
+        - name: GF_database_host
+          value: 10.0.75.101
+        - name: GF_database_user
+          value: postgres
+        - name: GF_database_password
+          value: ""
+        - name: GF_database_name
+          value: postgres
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-backend
+spec:
+  type: LoadBalancer
+  ports:
+  - name: grafana-backend
+    port: 5432
+    protocol: TCP
+  selector:
+    app: grafana-db
+    tier: grafana-backend
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: grafana-db
+spec:
+  selector:
+    matchLabels:
+      app: grafana-db
+      tier: grafana-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana-db
+        tier: grafana-backend
+    spec:
+      containers:
+      - name: grafana-back
+        image: mustiks/postgres-windows
+        ports:
+        - containerPort: 5432
