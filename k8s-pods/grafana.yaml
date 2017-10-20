@@ -37,7 +37,7 @@ spec:
         - name: acrconnection
       containers:
       - name: grafana-frontend
-        image: acrdemo.azurecr.io/versent/ref-grafana:254
+        image: acrdemo.azurecr.io/versent/ref-grafana:latest
         env:
         - name: GF_database_type
           value: postgres
