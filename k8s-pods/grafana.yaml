@@ -21,7 +21,7 @@ spec:
     matchLabels:
       app: grafana-app
       tier: grafana-frontend
-  replicas: 1 # tells deployment to run 2 pods matching the template
+  replicas: 5 # tells deployment to run 2 pods matching the template
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -33,14 +33,14 @@ spec:
         app: grafana-app
         tier: grafana-frontend
     spec:
+      imagePullSecrets:
+        - name: acrconnection
       containers:
       - name: grafana-frontend
-        image: davidobrien/nanoserver-grafana
+        image: acrdemo.azurecr.io/versent/ref-grafana:254
         env:
         - name: GF_database_type
           value: postgres
-        - name: GF_database_host
-          value: 10.0.75.101
         - name: GF_database_user
           value: postgres
         - name: GF_database_password
