@@ -48,7 +48,7 @@ spec:
         - name: GF_database_name
           value: postgres
         - name: GF_dashboards_json_enabled
-          value: true
+          value: "true"
         - name: GF_dashboards_json_path
           value: c:/grafanadashboards
         ports:
