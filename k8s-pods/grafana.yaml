@@ -21,7 +21,7 @@ spec:
     matchLabels:
       app: grafana-app
       tier: grafana-frontend
-  replicas: 5 # tells deployment to run 2 pods matching the template
+  replicas: 10 # tells deployment to run 2 pods matching the template
   strategy:
     rollingUpdate:
       maxSurge: 1
