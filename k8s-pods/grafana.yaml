@@ -38,6 +38,7 @@ spec:
       containers:
       - name: grafana-frontend
         image: acrdemo.azurecr.io/versent/ref-grafana:latest
+        imagePullPolicy: Always
         env:
         - name: GF_database_type
           value: postgres
